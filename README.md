@@ -37,6 +37,20 @@ Modelos:
 
 Imágenes:
 - Meta Quest Hardware Art – Content/Textures/T_Quest2_controller – Meta License – https://developers.meta.com/horizon/downloads/package/oculus-controller-art/?locale=en_GB
+
+Se han usado algunas texturas de ambientcg y opengameart con licencia Creative Commons CC0 las cuales posteriormente han sido altamente modificadas con Photoshop y convertido en nuevas imágenes.
+Enlaces:
+- https://ambientcg.com/
+- https://opengameart.org/
+  
+Texturas que usan esto:
+- Content/Textures/T_Baldosa_difusse
+- Content/Textures/T_Scifi_Panel6_difusse
+- Content/Textures/T_Scifi_Panel6_difusse_AZUL
+- Content/Textures/T_SueloBig_Diffuse
+- Content/Textures/T_Vault_Diffuse
+- Content/Textures/T_vault_hight_Diffuse
+
 ---
 
 ## Entrevista / Proceso de creación
