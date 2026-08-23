@@ -1,0 +1,59 @@
+                    name.setError("Pon un nombre para guardar el mix");
+                    return;
+                }
+                if (originalName != null && !originalName.equals(mixName)) savedMixes.remove(originalName);
+                savedMixes.put(mixName, selection);
+                saveCustomData();
+                dialog.dismiss();
+                startCategory(mixName, resolveMix(selection));
+            });
+            dialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(v -> {
+                List<String> selection = checkedCategoryNames(checks, available);
+                if (selection.isEmpty()) {
+                    Toast.makeText(this, "Selecciona al menos una categoría", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                String display = name.getText().toString().trim();
+                if (display.isEmpty()) display = "Mix personalizado";
+                dialog.dismiss();
+                startCategory(display, resolveMix(selection));
+            });
+            if (originalName != null) {
+                dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setText("Eliminar");
+                dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(v -> new AlertDialog.Builder(this)
+                        .setTitle("Eliminar mix")
+                        .setMessage("¿Eliminar \"" + originalName + "\"?")
+                        .setPositiveButton("Eliminar", (dd, which) -> {
+                            savedMixes.remove(originalName);
+                            saveCustomData();
+                            dialog.dismiss();
+                            showMenu();
+                        })
+                        .setNegativeButton("Cancelar", null)
+                        .show());
+            }
+        });
+        dialog.show();
+    }
+
+    private List<String> checkedCategoryNames(List<CheckBox> checks, Map<String, List<String>> available) {
+        List<String> names = new ArrayList<>(available.keySet());
+        List<String> selected = new ArrayList<>();
+        for (int i = 0; i < checks.size() && i < names.size(); i++) if (checks.get(i).isChecked()) selected.add(names.get(i));
+        return selected;
+    }
+
+    private void startCategory(String name, List<String> words) {
+        if (words == null || words.isEmpty()) {
+            Toast.makeText(this, "Esta selección no tiene palabras", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        selectedCategory = name;
+        replayWords = new ArrayList<>(words);
+        deck = new ArrayList<>(words);
+        Collections.shuffle(deck);
+        deckIndex = 0;
+        score = 0;
+        skipped = 0;
+        showCountdown();
+    }
