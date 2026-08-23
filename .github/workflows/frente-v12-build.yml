@@ -12,7 +12,9 @@ jobs:
       - name: Assemble v1.2 source
         run: |
           cat frente-v2-java/part* > frente-build/app/src/main/java/com/nacho/frente/MainActivity.java
-          git apply frente-ui-v12.patch
+          sed -i '/import android.graphics.Typeface;/a import android.graphics.drawable.GradientDrawable;' frente-build/app/src/main/java/com/nacho/frente/MainActivity.java
+          { head -n 2 frente-ui-v12.patch; awk 'BEGIN{keep=0} /^@@ -319/{keep=1} keep{print}' frente-ui-v12.patch; } > /tmp/frente-ui-no-import.patch
+          git apply /tmp/frente-ui-no-import.patch
           sed -i "s/versionCode 1/versionCode 3/; s/versionName '1.0'/versionName '1.2'/" frente-build/app/build.gradle
       - uses: actions/setup-java@v4
         with:
