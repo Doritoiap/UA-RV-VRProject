@@ -9,6 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Restore Frente v2 source
+        run: |
+          mkdir -p /tmp/frente-v2
+          cat frente-v2-src/part* > /tmp/frente-v2.b64
+          base64 -d /tmp/frente-v2.b64 > /tmp/frente-v2.zip
+          unzip -q /tmp/frente-v2.zip -d /tmp/frente-v2
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -19,11 +25,11 @@ jobs:
       - uses: android-actions/setup-android@v3
       - run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
       - name: Build APK
-        working-directory: frente-build
+        working-directory: /tmp/frente-v2/FrenteAPK
         run: gradle --no-daemon assembleDebug
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Frente-v2-apk
-          path: frente-build/app/build/outputs/apk/debug/app-debug.apk
+          path: /tmp/frente-v2/FrenteAPK/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
