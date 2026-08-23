@@ -1,0 +1,60 @@
+        if (magnitude < 0.1f) return 0f;
+        float normalizedZ = Math.max(-1f, Math.min(1f, z / magnitude));
+        return (float) Math.toDegrees(Math.asin(normalizedZ));
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (!playing) return;
+        int type = event.sensor.getType();
+        if (type != Sensor.TYPE_GRAVITY && type != Sensor.TYPE_ACCELEROMETER) return;
+
+        // TYPE_GRAVITY is already filtered. Accelerometer gets stronger smoothing as fallback.
+        float alpha = type == Sensor.TYPE_GRAVITY ? 0.28f : 0.12f;
+        if (!filterReady) {
+            filteredX = event.values[0];
+            filteredY = event.values[1];
+            filteredZ = event.values[2];
+            filterReady = true;
+        } else {
+            filteredX = filteredX * (1f - alpha) + event.values[0] * alpha;
+            filteredY = filteredY * (1f - alpha) + event.values[1] * alpha;
+            filteredZ = filteredZ * (1f - alpha) + event.values[2] * alpha;
+        }
+
+        long now = System.currentTimeMillis();
+        float absoluteAngle = calculateScreenTiltAngle(filteredX, filteredY, filteredZ);
+
+        if (now <= calibrationUntil) {
+            // Ignore the very first samples while the filter settles.
+            if (now - roundStartedAt > 180) {
+                calibrationAngleSum += absoluteAngle;
+                calibrationSamples++;
+                neutralAngleDeg = calibrationSamples > 0 ? calibrationAngleSum / calibrationSamples : absoluteAngle;
+            }
+            gestureHint.setText("CALIBRANDO… mantén el móvil quieto");
+            return;
+        }
+
+        if (calibrationSamples == 0) neutralAngleDeg = absoluteAngle;
+        float relativeAngle = absoluteAngle - neutralAngleDeg;
+        float absRelative = Math.abs(relativeAngle);
+
+        if (absRelative <= NEUTRAL_ANGLE_DEG) {
+            candidateDirection = 0;
+            candidateSince = 0L;
+            if (neutralSince == 0L) neutralSince = now;
+            if (now - neutralSince >= NEUTRAL_ARM_MS) gestureArmed = true;
+            gestureHint.setText(gestureArmed ? "LISTO · ↓ ACERTADA          PASAR ↑" : "Vuelve al centro…");
+            return;
+        }
+
+        neutralSince = 0L;
+        if (!gestureArmed || now - lastGestureAt < GESTURE_COOLDOWN_MS) {
+            gestureHint.setText("Vuelve al centro para continuar");
+            return;
+        }
+
+        int direction = 0;
+        if (relativeAngle <= -TRIGGER_ANGLE_DEG) direction = -1;
+        else if (relativeAngle >= TRIGGER_ANGLE_DEG) direction = 1;
