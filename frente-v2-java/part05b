@@ -1,0 +1,60 @@
+    private void showCountdown() {
+        unregisterSensors();
+        stopRound();
+        playing = false;
+
+        FrameLayout root = new FrameLayout(this);
+        root.setBackgroundColor(Color.rgb(21, 23, 25));
+        TextView counter = text("3", 100, true);
+        counter.setTextColor(Color.WHITE);
+        root.addView(counter, new FrameLayout.LayoutParams(-1, -1));
+        TextView hint = text("Ponte el móvil en la frente y déjalo recto", 20, true);
+        hint.setTextColor(Color.LTGRAY);
+        FrameLayout.LayoutParams hp = new FrameLayout.LayoutParams(-1, dp(70), Gravity.BOTTOM);
+        hp.setMargins(dp(20), 0, dp(20), dp(20));
+        root.addView(hint, hp);
+        setContentView(root);
+
+        new CountDownTimer(2400, 800) {
+            int n = 3;
+            @Override public void onTick(long ms) { counter.setText(String.valueOf(n--)); }
+            @Override public void onFinish() { showGame(); }
+        }.start();
+    }
+
+    private void showGame() {
+        hideSystemUi();
+        gameRoot = new FrameLayout(this);
+        gameRoot.setBackgroundColor(Color.rgb(250, 248, 243));
+
+        LinearLayout top = new LinearLayout(this);
+        top.setOrientation(LinearLayout.HORIZONTAL);
+        top.setGravity(Gravity.CENTER_VERTICAL);
+        top.setPadding(dp(24), dp(10), dp(24), dp(6));
+        timerView = text("60", 28, true);
+        timerView.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+        scoreView = text("✓ 0", 22, true);
+        scoreView.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
+        top.addView(timerView, new LinearLayout.LayoutParams(0, dp(56), 1));
+        top.addView(scoreView, new LinearLayout.LayoutParams(0, dp(56), 1));
+        gameRoot.addView(top, new FrameLayout.LayoutParams(-1, dp(70), Gravity.TOP));
+
+        wordView = text("", 56, true);
+        wordView.setTextColor(Color.rgb(15, 15, 15));
+        wordView.setPadding(dp(38), dp(34), dp(38), dp(34));
+        FrameLayout.LayoutParams wp = new FrameLayout.LayoutParams(-1, -1);
+        wp.setMargins(dp(20), dp(68), dp(20), dp(70));
+        gameRoot.addView(wordView, wp);
+
+        gestureHint = text("CALIBRANDO… mantén el móvil quieto", 16, true);
+        gestureHint.setTextColor(Color.rgb(88, 88, 88));
+        FrameLayout.LayoutParams gp = new FrameLayout.LayoutParams(-1, dp(64), Gravity.BOTTOM);
+        gp.setMargins(dp(16), 0, dp(16), dp(3));
+        gameRoot.addView(gestureHint, gp);
+
+        feedbackView = text("", 44, true);
+        feedbackView.setTextColor(Color.WHITE);
+        feedbackView.setVisibility(View.GONE);
+        gameRoot.addView(feedbackView, new FrameLayout.LayoutParams(-1, -1));
+
+        // Touch fallback: left half = pass, right half = correct.
