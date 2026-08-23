@@ -1,0 +1,120 @@
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        );
+    }
+
+    private void put(String name, String... words) {
+        builtInCategories.put(name, Arrays.asList(words));
+    }
+
+    private void initWords() {
+        put("Películas y series",
+                "Titanic", "Shrek", "Harry Potter", "Breaking Bad", "Toy Story", "Star Wars", "Los Simpson", "Stranger Things",
+                "Jurassic Park", "Avatar", "Gladiator", "Frozen", "El Rey León", "Batman", "Spider-Man", "Los Vengadores",
+                "Regreso al futuro", "The Office", "Friends", "La Casa de Papel", "Matrix", "Piratas del Caribe", "Juego de Tronos",
+                "The Walking Dead", "Rocky", "Indiana Jones", "Buscando a Nemo", "Monstruos S.A.", "Deadpool", "Miércoles",
+                "Black Mirror", "Los Soprano", "El Señor de los Anillos", "Forrest Gump", "Interstellar", "Coco", "Up", "Joker",
+                "Peaky Blinders", "Los Bridgerton", "Sherlock", "The Boys", "Dexter", "Los Juegos del Hambre", "Misión Imposible",
+                "El Padrino", "Pulp Fiction", "E.T.", "Los Cazafantasmas", "Solo en casa");
+
+        put("Animales",
+                "Elefante", "Pingüino", "Jirafa", "Canguro", "Tiburón", "Pulpo", "Panda", "Cocodrilo", "Camaleón", "Flamenco",
+                "Gorila", "Koala", "Delfín", "Murciélago", "Avestruz", "Rinoceronte", "Medusa", "Lobo", "Mapache", "Caballito de mar",
+                "Ornitorrinco", "Pavo real", "Serpiente", "Águila", "Hipopótamo", "Foca", "Erizo", "Perezoso", "Leopardo", "Lémur",
+                "Cangrejo", "Tortuga", "Hámster", "Zorro", "Búho", "Escorpión", "Hormiga", "Mantis religiosa", "Ballena", "Nutria",
+                "Jabalí", "Cabra", "Camello", "Mosquito", "Mariposa", "Caracol", "Topo", "Piraña", "Loro", "Cebra");
+
+        put("Objetos",
+                "Paraguas", "Microondas", "Cepillo de dientes", "Semáforo", "Mochila", "Martillo", "Tostadora", "Sacacorchos", "Almohada",
+                "Extintor", "Ventilador", "Calculadora", "Tijeras", "Escoba", "Linterna", "Ascensor", "Auriculares", "Nevera", "Cremallera",
+                "Prismáticos", "Taladro", "Reloj", "Cafetera", "Grapadora", "Mando a distancia", "Colador", "Destornillador", "Plancha",
+                "Cargador", "Candado", "Maleta", "Sartén", "Termómetro", "Percha", "Espejo", "Sacapuntas", "Brújula", "Regadera",
+                "Abrelatas", "Pinzas", "Cubo", "Fregona", "Báscula", "Cámara", "Trípode", "Llave inglesa", "Casco", "Timbre", "Biberón", "Rallador");
+
+        put("Personajes famosos",
+                "Messi", "Cristiano Ronaldo", "Taylor Swift", "Elon Musk", "Shakira", "Leonardo DiCaprio", "MrBeast", "Lady Gaga", "Tom Cruise",
+                "Bad Bunny", "Dwayne Johnson", "Aitana", "Will Smith", "Rihanna", "Ibai Llanos", "Rosalía", "Pedro Pascal", "Beyoncé",
+                "Keanu Reeves", "Ariana Grande", "Brad Pitt", "Jennifer Aniston", "Michael Jackson", "Freddie Mercury", "David Beckham",
+                "Miley Cyrus", "Robert Downey Jr.", "Snoop Dogg", "Karol G", "Fernando Alonso", "Rafa Nadal", "Carlos Alcaraz", "Penélope Cruz",
+                "Antonio Banderas", "Bizarrap", "Quevedo", "Dua Lipa", "Ed Sheeran", "Billie Eilish", "Zendaya", "Ryan Reynolds", "Margot Robbie",
+                "Johnny Depp", "Jennifer Lopez", "LeBron James", "Kim Kardashian", "David Bisbal", "Pablo Motos", "Jordi Wild", "Sergio Ramos");
+
+        put("Videojuegos",
+                "Minecraft", "Fortnite", "GTA", "The Sims", "Mario Kart", "Pokémon", "Call of Duty", "Skyrim", "Dark Souls", "EA Sports FC",
+                "Among Us", "Tetris", "The Last of Us", "Resident Evil", "Red Dead Redemption", "Fall Guys", "Zelda", "Roblox", "Cyberpunk 2077",
+                "God of War", "Super Mario", "League of Legends", "Valorant", "Counter-Strike", "Animal Crossing", "Clash Royale", "Elden Ring",
+                "Portal", "Half-Life", "Overwatch", "Fallout", "Assassin's Creed", "Rocket League", "Brawl Stars", "Hogwarts Legacy", "DOOM",
+                "Mortal Kombat", "Street Fighter", "Halo", "Metal Gear Solid", "Silent Hill", "Crash Bandicoot", "Sonic", "Pac-Man", "FIFA Street",
+                "Age of Empires", "Civilization", "World of Warcraft", "Hades", "Stardew Valley");
+
+        put("Comida y bebida",
+                "Paella", "Pizza", "Hamburguesa", "Sushi", "Croqueta", "Gazpacho", "Tortilla de patatas", "Kebab", "Tacos", "Churros",
+                "Chocolate", "Helado", "Donut", "Palomitas", "Lasaña", "Espaguetis", "Ensaladilla rusa", "Jamón", "Queso", "Aceitunas",
+                "Café", "Té", "Batido", "Limonada", "Agua con gas", "Cerveza sin alcohol", "Zumo de naranja", "Bocadillo", "Gofre", "Crepe",
+                "Nachos", "Guacamole", "Ramen", "Curry", "Falafel", "Risotto", "Empanada", "Flan", "Tarta de queso", "Brownie",
+                "Macarrones", "Albóndigas", "Puré", "Sandía", "Piña", "Aguacate", "Coco", "Plátano", "Fresas", "Patatas fritas");
+
+        put("Países y lugares",
+                "España", "Portugal", "Francia", "Italia", "Japón", "China", "México", "Brasil", "Argentina", "Egipto", "Australia", "Canadá",
+                "Nueva York", "Londres", "París", "Roma", "Barcelona", "Alicante", "Madrid", "Lisboa", "Venecia", "Las Vegas", "Hollywood",
+                "Torre Eiffel", "Coliseo Romano", "Gran Muralla China", "Pirámides de Egipto", "Estatua de la Libertad", "Big Ben", "Sagrada Familia",
+                "Monte Everest", "Sahara", "Amazonas", "Polo Norte", "Hawái", "Ibiza", "Mallorca", "Canarias", "Disneyland", "Central Park",
+                "Times Square", "Machu Picchu", "Taj Mahal", "Stonehenge", "Mar Mediterráneo", "Antártida", "Luna", "Marte", "El Vaticano", "Ámsterdam");
+
+        put("Profesiones",
+                "Bombero", "Médico", "Profesor", "Policía", "Cocinero", "Arquitecto", "Abogado", "Veterinario", "Piloto", "Astronauta",
+                "Fontanero", "Electricista", "Carpintero", "Periodista", "Fotógrafo", "Actor", "Cantante", "Dentista", "Psicólogo", "Camarero",
+                "Panadero", "Peluquero", "Mecánico", "Jardinero", "Diseñador", "Programador", "Streamer", "Influencer", "Arqueólogo", "Socorrista",
+                "Juez", "Detective", "Granjero", "Pescador", "Militar", "Taxista", "Enfermero", "Farmacéutico", "Científico", "Entrenador",
+                "Director de cine", "Mago", "Payaso", "DJ", "Traductor", "Bibliotecario", "Repartidor", "Guardia de seguridad", "Modelo", "Albañil");
+
+        put("Acciones",
+                "Correr", "Saltar", "Dormir", "Roncar", "Estornudar", "Bostezar", "Nadar", "Bailar", "Cantar", "Cocinar", "Llorar", "Reír",
+                "Aplaudir", "Susurrar", "Gritar", "Trepar", "Patinar", "Esquiar", "Pescar", "Conducir", "Planchar", "Barrer", "Fregar",
+                "Cepillarse los dientes", "Maquillarse", "Afeitarse", "Hacer una foto", "Tocar la guitarra", "Leer", "Escribir", "Dibujar",
+                "Hacer yoga", "Boxear", "Remar", "Montar a caballo", "Hacer malabares", "Silbar", "Guiñar un ojo", "Dar un abrazo", "Dar un beso",
+                "Tropezar", "Caerse", "Esconderse", "Buscar", "Abrir un regalo", "Inflar un globo", "Atarse los cordones", "Sacarse un selfie", "Teletrabajar", "Meditar");
+
+        put("Deportes",
+                "Fútbol", "Baloncesto", "Tenis", "Pádel", "Golf", "Boxeo", "Natación", "Atletismo", "Ciclismo", "Fórmula 1", "MotoGP", "Rugby",
+                "Voleibol", "Balonmano", "Béisbol", "Hockey", "Surf", "Skate", "Esquí", "Snowboard", "Escalada", "Gimnasia", "Karate", "Judo",
+                "Taekwondo", "Esgrima", "Tiro con arco", "Ping-pong", "Bádminton", "Waterpolo", "Triatlón", "Maratón", "Buceo", "Piragüismo",
+                "Remo", "Equitación", "Parkour", "Halterofilia", "CrossFit", "Dardos", "Billar", "Ajedrez", "Patinaje artístico", "Salto de trampolín",
+                "Lucha libre", "Críquet", "BMX", "Motocross", "Paracaidismo", "Kitesurf");
+
+        put("Música",
+                "Guitarra", "Piano", "Batería", "Violín", "Saxofón", "Trompeta", "Flauta", "Ukelele", "Micrófono", "Concierto", "Festival",
+                "Rock", "Pop", "Reguetón", "Rap", "Jazz", "Flamenco", "Techno", "Heavy metal", "Ópera", "K-pop", "DJ", "Vinilo", "Spotify",
+                "Karaoke", "Orquesta", "Banda", "Solo de guitarra", "Bajo", "Arpa", "Acordeón", "Maracas", "Triángulo", "Xilófono", "Auriculares",
+                "Altavoz", "Disco", "Canción", "Estribillo", "Letra", "Baile", "Ritmo", "Beat", "Autotune", "Grammy", "Eurovisión", "Gira mundial",
+                "Videoclip", "Lista de reproducción", "Radio");
+
+        put("Tecnología",
+                "Smartphone", "Ordenador", "Tablet", "Wi-Fi", "Bluetooth", "Código QR", "Inteligencia artificial", "Robot", "Dron", "Impresora 3D",
+                "Realidad virtual", "Realidad aumentada", "USB", "Disco duro", "Nube", "Contraseña", "Hacker", "Virus informático", "Emoji", "Chatbot",
+                "GPS", "Satélite", "Teclado", "Ratón", "Monitor", "Webcam", "Router", "Batería externa", "Cargador inalámbrico", "Reloj inteligente",
+                "Consola", "Mando", "Servidor", "Aplicación", "Página web", "Streaming", "Podcast", "Videollamada", "Memoria RAM", "Procesador",
+                "Tarjeta gráfica", "Código fuente", "Bug", "Actualización", "Modo avión", "Captura de pantalla", "Reconocimiento facial", "Huella digital", "Fibra óptica", "Pantalla táctil");
+
+        put("Personajes ficticios",
+                "Superman", "Batman", "Spider-Man", "Hulk", "Iron Man", "Thor", "Wonder Woman", "Joker", "Darth Vader", "Yoda", "Harry Potter",
+                "Hermione", "Gandalf", "Frodo", "Shrek", "Burro", "Mickey Mouse", "Donald", "Bob Esponja", "Patricio", "Homer Simpson", "Bart Simpson",
+                "Scooby-Doo", "Pikachu", "Mario", "Luigi", "Sonic", "Lara Croft", "Kratos", "Geralt de Rivia", "Goku", "Vegeta", "Naruto",
+                "Sailor Moon", "Jack Sparrow", "Indiana Jones", "Rocky Balboa", "Rambo", "Terminator", "E.T.", "Stitch", "Woody", "Buzz Lightyear",
+                "Elsa", "Simba", "Gru", "Minion", "Wednesday Addams", "Deadpool", "Wolverine");
+
+        put("Marcas",
+                "Apple", "Samsung", "Nike", "Adidas", "Coca-Cola", "Pepsi", "McDonald's", "Burger King", "Netflix", "YouTube", "Google", "Amazon",
+                "IKEA", "Zara", "Lego", "PlayStation", "Xbox", "Nintendo", "Ferrari", "Mercedes", "BMW", "Tesla", "Toyota", "Volkswagen", "Red Bull",
+                "Starbucks", "KFC", "Domino's", "Spotify", "TikTok", "Instagram", "WhatsApp", "Microsoft", "Intel", "Nvidia", "Canon", "Sony", "L'Oréal",
+                "Rolex", "Gucci", "Louis Vuitton", "Pringles", "Oreo", "Nesquik", "Colacao", "Mercadona", "Carrefour", "Lidl", "Decathlon", "Airbnb");
+
+        put("Historia y cultura",
+                "Napoleón", "Julio César", "Cleopatra", "Cristóbal Colón", "Leonardo da Vinci", "Albert Einstein", "Marie Curie", "Picasso", "Velázquez",
+                "Miguel de Cervantes", "Don Quijote", "Mona Lisa", "Guernica", "Edad Media", "Imperio romano", "Vikingos", "Piratas", "Samuráis",
+                "Dinosaurios", "Prehistoria", "Revolución francesa", "Segunda Guerra Mundial", "Antiguo Egipto", "Grecia antigua", "Renacimiento", "Castillo",
+                "Catedral", "Museo", "Biblioteca", "Flamenco", "Fallas", "San Fermín", "Carnaval", "Halloween", "Navidad", "Semana Santa", "Reyes Magos",
+                "Papá Noel", "Horóscopo", "Mitología griega", "Zeus", "Hércules", "Medusa", "Troya", "Caballero", "Gladiador", "Faraón", "Momia", "Esfinge", "Stonehenge");
+
+        put("Casa y vida diaria",
