@@ -1,0 +1,59 @@
+        gameRoot.setOnTouchListener((v, e) -> {
+            if (!playing || e.getAction() != MotionEvent.ACTION_DOWN) return true;
+            if (e.getX() < gameRoot.getWidth() / 2f) registerAnswer(false); else registerAnswer(true);
+            return true;
+        });
+
+        setContentView(gameRoot);
+        nextWord();
+        resetGestureState();
+        playing = true;
+        roundStartedAt = System.currentTimeMillis();
+        calibrationUntil = roundStartedAt + CALIBRATION_MS;
+        registerSensors();
+
+        roundTimer = new CountDownTimer(60000, 1000) {
+            @Override public void onTick(long ms) { timerView.setText(String.valueOf((ms + 999) / 1000)); }
+            @Override public void onFinish() { timerView.setText("0"); finishRound(); }
+        }.start();
+    }
+
+    private void nextWord() {
+        if (deck.isEmpty()) return;
+        if (deckIndex >= deck.size()) {
+            Collections.shuffle(deck);
+            deckIndex = 0;
+        }
+        wordView.setText(deck.get(deckIndex++));
+    }
+
+    private void registerAnswer(boolean correct) {
+        long now = System.currentTimeMillis();
+        if (!playing || now - lastGestureAt < GESTURE_COOLDOWN_MS) return;
+        lastGestureAt = now;
+        gestureArmed = false;
+        neutralSince = 0L;
+        candidateDirection = 0;
+        candidateSince = 0L;
+
+        if (correct) {
+            score++;
+            scoreView.setText("✓ " + score);
+            vibrate(70);
+            flashFeedback("¡ACERTADA!", Color.rgb(44, 168, 94));
+        } else {
+            skipped++;
+            vibrate(35);
+            flashFeedback("PASAR", Color.rgb(211, 75, 75));
+        }
+        nextWord();
+    }
+
+    private void flashFeedback(String label, int color) {
+        feedbackView.setText(label);
+        feedbackView.setBackgroundColor(color);
+        feedbackView.setVisibility(View.VISIBLE);
+        feedbackView.animate().cancel();
+        feedbackView.setAlpha(1f);
+        feedbackView.animate().alpha(0f).setDuration(300).withEndAction(() -> feedbackView.setVisibility(View.GONE)).start();
+    }
