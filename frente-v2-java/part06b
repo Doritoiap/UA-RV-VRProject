@@ -1,0 +1,60 @@
+    private void vibrate(long ms) {
+        if (vibrator == null || !vibrator.hasVibrator()) return;
+        if (Build.VERSION.SDK_INT >= 26) vibrator.vibrate(VibrationEffect.createOneShot(ms, VibrationEffect.DEFAULT_AMPLITUDE));
+        else vibrator.vibrate(ms);
+    }
+
+    private void finishRound() {
+        if (!playing) return;
+        playing = false;
+        unregisterSensors();
+        stopRound();
+
+        LinearLayout root = new LinearLayout(this);
+        root.setOrientation(LinearLayout.VERTICAL);
+        root.setGravity(Gravity.CENTER);
+        root.setPadding(dp(28), dp(20), dp(28), dp(20));
+        root.setBackgroundColor(Color.rgb(246, 242, 234));
+
+        TextView over = text("FIN DE LA RONDA", 22, true);
+        root.addView(over, new LinearLayout.LayoutParams(-1, -2));
+        TextView result = text(String.valueOf(score), 92, true);
+        root.addView(result, new LinearLayout.LayoutParams(-1, -2));
+        TextView label = text("acertadas  ·  " + skipped + " pasadas", 20, false);
+        label.setTextColor(Color.DKGRAY);
+        root.addView(label, new LinearLayout.LayoutParams(-1, -2));
+        TextView cat = text(selectedCategory, 16, true);
+        cat.setTextColor(Color.GRAY);
+        root.addView(cat, new LinearLayout.LayoutParams(-1, -2));
+
+        LinearLayout buttons = new LinearLayout(this);
+        buttons.setOrientation(LinearLayout.HORIZONTAL);
+        buttons.setGravity(Gravity.CENTER);
+        Button again = button("Otra ronda");
+        again.setOnClickListener(v -> startCategory(selectedCategory, replayWords));
+        Button menu = button("Categorías");
+        menu.setOnClickListener(v -> showMenu());
+        LinearLayout.LayoutParams bp = new LinearLayout.LayoutParams(0, dp(60), 1);
+        bp.setMargins(dp(6), dp(18), dp(6), 0);
+        buttons.addView(again, bp);
+        buttons.addView(menu, bp);
+        root.addView(buttons, new LinearLayout.LayoutParams(-1, -2));
+
+        setContentView(root);
+    }
+
+    private void resetGestureState() {
+        filteredX = filteredY = filteredZ = 0f;
+        filterReady = false;
+        neutralAngleDeg = 0f;
+        calibrationAngleSum = 0f;
+        calibrationSamples = 0;
+        gestureArmed = false;
+        neutralSince = 0L;
+        lastGestureAt = 0L;
+        candidateDirection = 0;
+        candidateSince = 0L;
+    }
+
+    private float calculateScreenTiltAngle(float x, float y, float z) {
+        float magnitude = (float) Math.sqrt(x * x + y * y + z * z);
