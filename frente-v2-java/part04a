@@ -1,0 +1,60 @@
+            dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(v -> {
+                String newName = name.getText().toString().trim();
+                List<String> parsed = parseWords(words.getText().toString());
+                if (newName.isEmpty()) {
+                    name.setError("Pon un nombre");
+                    return;
+                }
+                if (parsed.size() < 2) {
+                    words.setError("Añade al menos 2 palabras");
+                    return;
+                }
+                if (!newName.equals(originalName) && availableCategories().containsKey(newName)) {
+                    name.setError("Ya existe una categoría con ese nombre");
+                    return;
+                }
+                if (originalName != null && !originalName.equals(newName)) customCategories.remove(originalName);
+                customCategories.put(newName, parsed);
+                if (originalName != null && !originalName.equals(newName)) renameCategoryInMixes(originalName, newName);
+                saveCustomData();
+                dialog.dismiss();
+                showMenu();
+            });
+            if (originalName != null) {
+                dialog.getButton(DialogInterface.BUTTON_NEUTRAL).setVisibility(View.VISIBLE);
+                dialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(v -> new AlertDialog.Builder(this)
+                        .setTitle("Eliminar categoría")
+                        .setMessage("¿Eliminar \"" + originalName + "\"?")
+                        .setPositiveButton("Eliminar", (dd, which) -> {
+                            customCategories.remove(originalName);
+                            removeCategoryFromMixes(originalName);
+                            saveCustomData();
+                            dialog.dismiss();
+                            showMenu();
+                        })
+                        .setNegativeButton("Cancelar", null)
+                        .show());
+            }
+        });
+        dialog.show();
+    }
+
+    private void renameCategoryInMixes(String oldName, String newName) {
+        for (List<String> list : savedMixes.values()) {
+            for (int i = 0; i < list.size(); i++) if (list.get(i).equals(oldName)) list.set(i, newName);
+        }
+    }
+
+    private void removeCategoryFromMixes(String categoryName) {
+        List<String> emptyMixes = new ArrayList<>();
+        for (Map.Entry<String, List<String>> e : savedMixes.entrySet()) {
+            e.getValue().remove(categoryName);
+            if (e.getValue().isEmpty()) emptyMixes.add(e.getKey());
+        }
+        for (String name : emptyMixes) savedMixes.remove(name);
+    }
+
+    private List<String> parseWords(String raw) {
+        Set<String> unique = new LinkedHashSet<>();
+        String[] parts = raw.split("[\\n,;]+");
+        for (String part : parts) {
