@@ -1,0 +1,56 @@
+        else {
+            candidateDirection = 0;
+            candidateSince = 0L;
+            gestureHint.setText(relativeAngle < 0 ? "↓ Inclina un poco más" : "Inclina un poco más ↑");
+            return;
+        }
+
+        if (direction != candidateDirection) {
+            candidateDirection = direction;
+            candidateSince = now;
+        }
+
+        long requiredHold = absRelative >= HARD_TRIGGER_ANGLE_DEG ? 35L : GESTURE_CONFIRM_MS;
+        if (now - candidateSince >= requiredHold) registerAnswer(direction < 0);
+    }
+
+    @Override public void onAccuracyChanged(Sensor sensor, int accuracy) { }
+
+    private void registerSensors() {
+        if (sensorManager == null) return;
+        if (gravitySensor != null) sensorManager.registerListener(this, gravitySensor, SensorManager.SENSOR_DELAY_GAME);
+        else if (accelerometer != null) sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
+    }
+
+    private void unregisterSensors() {
+        if (sensorManager != null) sensorManager.unregisterListener(this);
+    }
+
+    private void stopRound() {
+        if (roundTimer != null) {
+            roundTimer.cancel();
+            roundTimer = null;
+        }
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+        hideSystemUi();
+        if (playing) registerSensors();
+    }
+
+    @Override protected void onPause() {
+        unregisterSensors();
+        super.onPause();
+    }
+
+    @Override protected void onDestroy() {
+        stopRound();
+        unregisterSensors();
+        super.onDestroy();
+    }
+
+    private int dp(int n) {
+        return Math.round(n * getResources().getDisplayMetrics().density);
+    }
+}
