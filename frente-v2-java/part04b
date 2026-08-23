@@ -1,0 +1,60 @@
+            String cleaned = part.trim();
+            if (!cleaned.isEmpty()) unique.add(cleaned);
+        }
+        return new ArrayList<>(unique);
+    }
+
+    private String joinLines(List<String> words) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < words.size(); i++) {
+            if (i > 0) sb.append('\n');
+            sb.append(words.get(i));
+        }
+        return sb.toString();
+    }
+
+    private void showMixEditor(String originalName, List<String> originalSelection) {
+        Map<String, List<String>> available = availableCategories();
+        LinearLayout content = new LinearLayout(this);
+        content.setOrientation(LinearLayout.VERTICAL);
+        content.setPadding(dp(20), dp(8), dp(20), dp(8));
+
+        EditText name = editField("Nombre del mix (ej. Fiesta)", false);
+        if (originalName != null) name.setText(originalName);
+        content.addView(name, new LinearLayout.LayoutParams(-1, -2));
+        TextView hint = text("Elige las categorías que quieres mezclar:", 14, false);
+        hint.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+        content.addView(hint, new LinearLayout.LayoutParams(-1, -2));
+
+        List<CheckBox> checks = new ArrayList<>();
+        Set<String> selected = originalSelection == null ? Collections.emptySet() : new LinkedHashSet<>(originalSelection);
+        for (Map.Entry<String, List<String>> e : available.entrySet()) {
+            CheckBox cb = new CheckBox(this);
+            cb.setText(e.getKey() + "  ·  " + e.getValue().size());
+            cb.setTextSize(16);
+            cb.setPadding(dp(8), dp(5), dp(8), dp(5));
+            cb.setChecked(selected.contains(e.getKey()));
+            checks.add(cb);
+            content.addView(cb, new LinearLayout.LayoutParams(-1, dp(48)));
+        }
+
+        ScrollView scroll = new ScrollView(this);
+        scroll.addView(content);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(originalName == null ? "Crear mix" : "Editar mix")
+                .setView(scroll)
+                .setPositiveButton("Guardar y jugar", null)
+                .setNeutralButton("Jugar sin guardar", null)
+                .setNegativeButton("Cancelar", null)
+                .create();
+
+        dialog.setOnShowListener(d -> {
+            dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(v -> {
+                List<String> selection = checkedCategoryNames(checks, available);
+                String mixName = name.getText().toString().trim();
+                if (selection.isEmpty()) {
+                    Toast.makeText(this, "Selecciona al menos una categoría", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (mixName.isEmpty()) {
