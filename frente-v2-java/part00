@@ -1,0 +1,120 @@
+package com.nacho.frente;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.SharedPreferences;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.text.InputType;
+import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+public class MainActivity extends Activity implements SensorEventListener {
+
+    private static final String PREFS = "frente_prefs";
+    private static final String KEY_CUSTOM_CATEGORIES = "custom_categories";
+    private static final String KEY_SAVED_MIXES = "saved_mixes";
+
+    private final Map<String, List<String>> builtInCategories = new LinkedHashMap<>();
+    private final Map<String, List<String>> customCategories = new LinkedHashMap<>();
+    private final Map<String, List<String>> savedMixes = new LinkedHashMap<>();
+
+    private SensorManager sensorManager;
+    private Sensor gravitySensor;
+    private Sensor accelerometer;
+    private Vibrator vibrator;
+    private SharedPreferences prefs;
+
+    private FrameLayout gameRoot;
+    private TextView wordView;
+    private TextView timerView;
+    private TextView scoreView;
+    private TextView gestureHint;
+    private TextView feedbackView;
+
+    private List<String> deck = new ArrayList<>();
+    private List<String> replayWords = new ArrayList<>();
+    private int deckIndex = 0;
+    private int score = 0;
+    private int skipped = 0;
+    private String selectedCategory = "Mezcla de todo";
+    private CountDownTimer roundTimer;
+    private boolean playing = false;
+
+    // Improved tilt detection: gravity vector -> angle -> calibration -> hysteresis.
+    private float filteredX = 0f;
+    private float filteredY = 0f;
+    private float filteredZ = 0f;
+    private boolean filterReady = false;
+    private float neutralAngleDeg = 0f;
+    private float calibrationAngleSum = 0f;
+    private int calibrationSamples = 0;
+    private long calibrationUntil = 0L;
+    private boolean gestureArmed = false;
+    private long neutralSince = 0L;
+    private long lastGestureAt = 0L;
+    private int candidateDirection = 0; // -1 correct, +1 pass
+    private long candidateSince = 0L;
+    private long roundStartedAt = 0L;
+
+    private static final float NEUTRAL_ANGLE_DEG = 12.0f;
+    private static final float TRIGGER_ANGLE_DEG = 33.0f;
+    private static final float HARD_TRIGGER_ANGLE_DEG = 44.0f;
+    private static final long CALIBRATION_MS = 850L;
+    private static final long NEUTRAL_ARM_MS = 260L;
+    private static final long GESTURE_CONFIRM_MS = 95L;
+    private static final long GESTURE_COOLDOWN_MS = 500L;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        hideSystemUi();
+        prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        initWords();
+        loadCustomData();
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        showMenu();
+    }
+
+    private void hideSystemUi() {
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_FULLSCREEN |
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
