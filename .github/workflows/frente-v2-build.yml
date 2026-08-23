@@ -19,11 +19,11 @@ jobs:
       - uses: android-actions/setup-android@v3
       - run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
       - name: Build APK
-        working-directory: frente-v2
+        working-directory: frente-build
         run: gradle --no-daemon assembleDebug
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Frente-v2-apk
-          path: frente-v2/app/build/outputs/apk/debug/app-debug.apk
+          path: frente-build/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
