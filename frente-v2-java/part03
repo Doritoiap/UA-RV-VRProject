@@ -1,0 +1,120 @@
+        root.setGravity(Gravity.CENTER_HORIZONTAL);
+        root.setPadding(dp(28), dp(16), dp(28), dp(24));
+        scroll.addView(root, new ScrollView.LayoutParams(-1, -2));
+
+        TextView title = text("FRENTE", 44, true);
+        root.addView(title, new LinearLayout.LayoutParams(-1, -2));
+        TextView sub = text("850 palabras · 60 segundos", 16, false);
+        sub.setTextColor(Color.DKGRAY);
+        root.addView(sub, new LinearLayout.LayoutParams(-1, -2));
+
+        LinearLayout creatorRow = new LinearLayout(this);
+        creatorRow.setOrientation(LinearLayout.HORIZONTAL);
+        Button newCategory = button("＋ Categoría");
+        newCategory.setOnClickListener(v -> showCategoryEditor(null, null));
+        Button newMix = button("🎛 Crear mix");
+        newMix.setOnClickListener(v -> showMixEditor(null, null));
+        LinearLayout.LayoutParams half = new LinearLayout.LayoutParams(0, dp(58), 1);
+        half.setMargins(dp(4), dp(8), dp(4), 0);
+        creatorRow.addView(newCategory, half);
+        creatorRow.addView(newMix, half);
+        root.addView(creatorRow, new LinearLayout.LayoutParams(-1, -2));
+
+        Button mixAll = button("🎲  Mezcla de todo");
+        mixAll.setOnClickListener(v -> startCategory("Mezcla de todo", allWords()));
+        root.addView(mixAll, menuButtonParams());
+
+        if (!savedMixes.isEmpty()) {
+            root.addView(sectionLabel("MIS MIXES"), new LinearLayout.LayoutParams(-1, -2));
+            for (Map.Entry<String, List<String>> e : new ArrayList<>(savedMixes.entrySet())) {
+                String mixName = e.getKey();
+                List<String> selections = new ArrayList<>(e.getValue());
+                Button b = button("🎛  " + mixName);
+                b.setOnClickListener(v -> startCategory(mixName, resolveMix(selections)));
+                b.setOnLongClickListener(v -> {
+                    showMixEditor(mixName, selections);
+                    return true;
+                });
+                root.addView(b, menuButtonParams());
+            }
+        }
+
+        if (!customCategories.isEmpty()) {
+            root.addView(sectionLabel("MIS CATEGORÍAS"), new LinearLayout.LayoutParams(-1, -2));
+            for (Map.Entry<String, List<String>> e : new ArrayList<>(customCategories.entrySet())) {
+                String name = e.getKey();
+                List<String> words = new ArrayList<>(e.getValue());
+                Button b = button("★  " + name + "  ·  " + words.size());
+                b.setOnClickListener(v -> startCategory(name, words));
+                b.setOnLongClickListener(v -> {
+                    showCategoryEditor(name, words);
+                    return true;
+                });
+                root.addView(b, menuButtonParams());
+            }
+        }
+
+        root.addView(sectionLabel("CATEGORÍAS"), new LinearLayout.LayoutParams(-1, -2));
+        for (Map.Entry<String, List<String>> e : builtInCategories.entrySet()) {
+            Button b = button(e.getKey() + "  ·  " + e.getValue().size());
+            String name = e.getKey();
+            List<String> words = e.getValue();
+            b.setOnClickListener(v -> startCategory(name, words));
+            root.addView(b, menuButtonParams());
+        }
+
+        TextView instructions = text(
+                "EN LA FRENTE\n\n↓ Hacia el suelo = ACERTADA\n↑ Hacia el techo = PASAR\n\nAl empezar, mantén el móvil quieto un instante para calibrarlo.\nMantén pulsadas tus categorías o mixes para editarlos.",
+                14, false);
+        instructions.setTextColor(Color.rgb(75, 75, 75));
+        root.addView(instructions, new LinearLayout.LayoutParams(-1, -2));
+
+        setContentView(scroll);
+    }
+
+    private LinearLayout.LayoutParams menuButtonParams() {
+        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(-1, dp(58));
+        p.setMargins(0, dp(7), 0, 0);
+        return p;
+    }
+
+    private EditText editField(String hint, boolean multiline) {
+        EditText edit = new EditText(this);
+        edit.setHint(hint);
+        edit.setTextSize(16);
+        edit.setPadding(dp(12), dp(10), dp(12), dp(10));
+        if (multiline) {
+            edit.setMinLines(5);
+            edit.setGravity(Gravity.TOP | Gravity.START);
+            edit.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        } else {
+            edit.setSingleLine(true);
+            edit.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        }
+        return edit;
+    }
+
+    private void showCategoryEditor(String originalName, List<String> originalWords) {
+        LinearLayout content = new LinearLayout(this);
+        content.setOrientation(LinearLayout.VERTICAL);
+        content.setPadding(dp(20), dp(8), dp(20), dp(8));
+        EditText name = editField("Nombre de la categoría", false);
+        EditText words = editField("Una palabra por línea (también acepta comas)", true);
+        if (originalName != null) name.setText(originalName);
+        if (originalWords != null) words.setText(joinLines(originalWords));
+        content.addView(name, new LinearLayout.LayoutParams(-1, -2));
+        LinearLayout.LayoutParams wp = new LinearLayout.LayoutParams(-1, dp(210));
+        wp.setMargins(0, dp(8), 0, 0);
+        content.addView(words, wp);
+
+        ScrollView wrap = new ScrollView(this);
+        wrap.addView(content);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(originalName == null ? "Crear categoría" : "Editar categoría")
+                .setView(wrap)
+                .setPositiveButton("Guardar", null)
+                .setNegativeButton("Cancelar", null)
+                .create();
+        if (originalName != null) dialog.setButton(DialogInterface.BUTTON_NEUTRAL, "Eliminar", (d, w) -> { });
+        dialog.setOnShowListener(d -> {
